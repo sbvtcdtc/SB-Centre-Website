@@ -172,8 +172,21 @@ async function setPreviewQR(lic){
   var imgEl = document.getElementById("pc-qr");
   if(!imgEl) return;
   if(!lic){ imgEl.removeAttribute("src"); return; }
-  if(typeof QRCode === "undefined"){ imgEl.src = "https://api.qrserver.com/v1/create-qr-code/?size=192x192&margin=4&data=" + encodeURIComponent(verifyUrl(lic)); return; }
-  try { imgEl.src = await QRCode.toDataURL(verifyUrl(lic), {width:192, margin:1}); } catch(e){ imgEl.src = "https://api.qrserver.com/v1/create-qr-code/?size=192x192&margin=4&data=" + encodeURIComponent(verifyUrl(lic)); }
+  var url = "";
+  if(typeof QRCode !== "undefined"){
+    try { url = await QRCode.toDataURL(verifyUrl(lic), {width:192, margin:1}); } catch(e){}
+  }
+  if(!url){ url = "https://api.qrserver.com/v1/create-qr-code/?size=192x192&margin=4&data=" + encodeURIComponent(verifyUrl(lic)); imgEl.crossOrigin = "anonymous"; }
+  // Wait for the image to actually load before returning, otherwise
+  // html2canvas captures the QR area before the image appears (blank box).
+  await new Promise(function(res){
+    var done = false;
+    var fin = function(){ if(!done){ done = true; res(); } };
+    imgEl.onload = fin; imgEl.onerror = fin;
+    imgEl.src = url;
+    if(imgEl.complete && imgEl.naturalWidth) fin();
+    setTimeout(fin, 3000);
+  });
 }
 
 function fmtDateJp(iso){
@@ -204,6 +217,20 @@ function certRecordFromForm(){
   return {student_name:$("#c-name").value.trim(), license_no:$("#c-license").value.trim(), level:$("#c-level").value,
     course_name:$("#c-course").value.trim(), start_date:$("#c-start").value||null, end_date:$("#c-end").value||null,
     duration_months:parseInt($("#c-months").value)||3, hours:parseInt($("#c-hours").value)||180, issue_date:today};
+}
+function autoMonthsHours(){
+  var s = document.getElementById("c-start").value;
+  var e = document.getElementById("c-end").value;
+  if(!s || !e) return;
+  var sd = new Date(s), ed = new Date(e);
+  if(isNaN(sd) || isNaN(ed) || ed < sd) return;
+  // Months between dates: if within 3 months -> 3, otherwise -> 6.
+  // 3 months = 180 hours (60 hrs/month), so 6 months = 360 hours.
+  var months = (ed.getFullYear() - sd.getFullYear()) * 12 + (ed.getMonth() - sd.getMonth());
+  if(ed.getDate() < sd.getDate()) months -= 1;
+  var m = months <= 3 ? 3 : 6;
+  document.getElementById("c-months").value = m;
+  document.getElementById("c-hours").value = m * 60;
 }
 function updateCertPreview(){
   var rec = certRecordFromForm();
@@ -280,5 +307,8 @@ document.addEventListener("DOMContentLoaded", function(){
   $("#btn-backup").addEventListener("click", backupExport);
   ["c-name","c-license","c-level","c-course","c-start","c-end","c-months","c-hours"].forEach(function(id){
     var el = document.getElementById(id); if(el) el.addEventListener("input", updateCertPreview);
+  });
+  ["c-start","c-end"].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.addEventListener("change", function(){ autoMonthsHours(); updateCertPreview(); });
   });
 });

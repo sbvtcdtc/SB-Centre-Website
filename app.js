@@ -395,8 +395,21 @@ function verifyUrl(lic){ return "https://abubakarriyad1234-ux.github.io/SB-Centr
 async function setCertQR(imgEl, lic){
   if(!imgEl) return;
   if(!lic){ imgEl.removeAttribute("src"); return; }
-  if(typeof QRCode === "undefined"){ imgEl.src = "https://api.qrserver.com/v1/create-qr-code/?size=192x192&margin=4&data=" + encodeURIComponent(verifyUrl(lic)); return; }
-  try { imgEl.src = await QRCode.toDataURL(verifyUrl(lic), {width:192, margin:1}); } catch(e){ imgEl.src = "https://api.qrserver.com/v1/create-qr-code/?size=192x192&margin=4&data=" + encodeURIComponent(verifyUrl(lic)); }
+  var url = "";
+  if(typeof QRCode !== "undefined"){
+    try { url = await QRCode.toDataURL(verifyUrl(lic), {width:192, margin:1}); } catch(e){}
+  }
+  if(!url){ url = "https://api.qrserver.com/v1/create-qr-code/?size=192x192&margin=4&data=" + encodeURIComponent(verifyUrl(lic)); imgEl.crossOrigin = "anonymous"; }
+  // Wait for the image to actually load before returning, otherwise
+  // html2canvas captures the QR area before the image appears (blank box).
+  await new Promise(function(res){
+    var done = false;
+    var fin = function(){ if(!done){ done = true; res(); } };
+    imgEl.onload = fin; imgEl.onerror = fin;
+    imgEl.src = url;
+    if(imgEl.complete && imgEl.naturalWidth) fin();
+    setTimeout(fin, 3000);
+  });
 }
 function handleVerifyParam(){
   var v = null;
