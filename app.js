@@ -238,8 +238,12 @@ function toggleTheme(){
   try{ localStorage.setItem("sbvtc_theme", next); }catch(e){}
   applyTheme(next);
 }
+/* Delegated binding too, so the toggle works even if the DOMContentLoaded
+   binding is missed on a cached page. */
+document.addEventListener("click", function(e){
+  if(e.target.closest(".theme-toggle")) toggleTheme();
+});
 document.addEventListener("DOMContentLoaded", function(){
-  document.querySelectorAll(".theme-toggle").forEach(function(b){ b.addEventListener("click", toggleTheme); });
   applyTheme(currentTheme());
   document.querySelectorAll(".lang-btn").forEach(function(b){ b.addEventListener("click", function(){ setLang(b.getAttribute("data-lang")); }); });
   var burger = document.getElementById("burger");
