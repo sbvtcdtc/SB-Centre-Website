@@ -363,7 +363,7 @@ function renderPublic(){
   var bt = document.getElementById("brand-tag"); if(bt) bt.textContent = tagline;
   var ht = document.getElementById("hero-title"); if(ht) ht.innerHTML = esc(headline).replace(", ", ",<br/>").replace("、", "、<br/>");
   var hl = document.getElementById("hero-lead"); if(hl) hl.textContent = lead;
-  var ss = document.getElementById("stat-students"); if(ss) ss.textContent = dataLoaded ? fmtNum(455 + (DATA.students||[]).length) : "…";
+  var ss = document.getElementById("stat-students"); if(ss) ss.textContent = dataLoaded ? fmtNum(426 + (DATA.students||[]).length) : "…";
   var hc = document.getElementById("home-courses"); if(hc) hc.innerHTML = ["N5","N4","N3"].map(function(l){ return courseCardHTML(l,false); }).join("");
   var cd = document.getElementById("course-details"); if(cd) cd.innerHTML = ["N5","N4","N3"].map(function(l){ return courseCardHTML(l,true); }).join("");
   var sorted = (DATA.notices||[]).map(function(n){ return {date:n.notice_date||"", title:n.title, body:n.body}; }).sort(function(a,b){ return (b.date||"").localeCompare(a.date||""); });
