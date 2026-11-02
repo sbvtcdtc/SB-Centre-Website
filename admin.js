@@ -172,8 +172,8 @@ async function setPreviewQR(lic){
   var imgEl = document.getElementById("pc-qr");
   if(!imgEl) return;
   if(!lic){ imgEl.removeAttribute("src"); return; }
-  if(typeof QRCode === "undefined") return;
-  try { imgEl.src = await QRCode.toDataURL(verifyUrl(lic), {width:192, margin:1}); } catch(e){}
+  if(typeof QRCode === "undefined"){ imgEl.src = "https://api.qrserver.com/v1/create-qr-code/?size=192x192&margin=4&data=" + encodeURIComponent(verifyUrl(lic)); return; }
+  try { imgEl.src = await QRCode.toDataURL(verifyUrl(lic), {width:192, margin:1}); } catch(e){ imgEl.src = "https://api.qrserver.com/v1/create-qr-code/?size=192x192&margin=4&data=" + encodeURIComponent(verifyUrl(lic)); }
 }
 
 function fmtDateJp(iso){
