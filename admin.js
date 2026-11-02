@@ -66,6 +66,8 @@ async function loadAll(){
   var notices = await getAll("notices");
   $("#notice-tbody").innerHTML = notices.map(function(n){ return "<tr><td>"+esc(n.notice_date||"")+"</td><td>"+esc(n.title)+"</td><td>"+delBtn("notices", n.id)+"</td></tr>"; }).join("");
   var students = await getAll("students");
+  lastStudentSeq = 0;
+  students.forEach(function(x){ var m = String(x.roll || "").match(/(\d+)\s*$/); if(m) lastStudentSeq = Math.max(lastStudentSeq, parseInt(m[1], 10) || 0); });
   $("#student-tbody").innerHTML = students.map(function(x){ return "<tr><td>"+esc(x.roll)+"</td><td>"+esc(x.name)+"</td><td>"+esc(x.course||"")+"</td><td>"+delBtn("students", x.id)+"</td></tr>"; }).join("");
   var teachers = await getAll("teachers");
   $("#teacher-tbody").innerHTML = teachers.map(function(x){ return "<tr><td>"+esc(x.name)+"</td><td>"+esc(x.title||"")+"</td><td>"+delBtn("teachers", x.id)+"</td></tr>"; }).join("");
@@ -89,6 +91,7 @@ async function loadAll(){
   $("#d-notices").textContent = notices.length;
   $("#d-photos").textContent = gallery.length;
   bindDeletes(document);
+  fillNextRoll();
   fillNextLicense();
   updateCertPreview();
 }
@@ -217,6 +220,17 @@ function certBodies(rec){
   return {jp:jp, en:en};
 }
 
+/* Auto next student roll: SB-<SEQ>, one more than the highest existing roll. */
+var lastStudentSeq = 0;
+var autoRoll = null;
+function fillNextRoll(){
+  var el = document.getElementById("s-roll");
+  if(!el) return;
+  if(!el.value.trim() || (autoRoll && el.value.trim() === autoRoll)){
+    autoRoll = "SB-" + String(lastStudentSeq + 1).padStart(3, "0");
+    el.value = autoRoll;
+  }
+}
 /* Auto next license: SBVTC/<LEVEL>/<YEAR>/<SEQ>, SEQ is global across
    levels, one more than the highest existing certificate number. */
 var lastCertSeq = 0;
@@ -333,6 +347,7 @@ document.addEventListener("DOMContentLoaded", function(){
   });
   var cl = document.getElementById("c-level"); if(cl) cl.addEventListener("change", function(){ fillNextLicense(); updateCertPreview(); });
   var cli = document.getElementById("c-license"); if(cli) cli.addEventListener("input", function(){ if(cli.value.trim() !== autoLic) autoLic = null; });
+  var sr = document.getElementById("s-roll"); if(sr) sr.addEventListener("input", function(){ if(sr.value.trim() !== autoRoll) autoRoll = null; });
   ["c-start","c-end"].forEach(function(id){
     var el = document.getElementById(id); if(el) el.addEventListener("change", function(){ autoMonthsHours(); updateCertPreview(); });
   });
