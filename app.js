@@ -194,6 +194,11 @@ async function loadData(){
     });
     DATA.stories = await q("success_stories");
     DATA.slides = await q("slideshow_items");
+    // Newest slideshow item first, so a newly uploaded picture shows at the start.
+    DATA.slides.sort(function(a, b){
+      var ca = a.created_at || "", cb = b.created_at || "";
+      return ca < cb ? 1 : (ca > cb ? -1 : 0);
+    });
     dataLoaded = true;
     return true;
   } catch(e){ return false; }
