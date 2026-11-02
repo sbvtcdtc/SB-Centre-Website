@@ -331,6 +331,12 @@ function slideshowItems(){
     else slides.push({kind:"video", html:'<iframe src="'+esc(video.video_url)+'" title="Video" allowfullscreen loading="lazy"></iframe>'});
   }
   var pics = (DATA.slides||[]).filter(function(x){ return x.kind==="image" && x.image_url; });
+  // Gallery and slideshow share one pool: gallery pictures also slide.
+  var seen = {};
+  pics.forEach(function(p){ seen[p.image_url] = true; });
+  var galPics = (DATA.gallery||[]).filter(function(g){ return g.image_url && !seen[g.image_url]; });
+  galPics.sort(function(a, b){ var ca = a.created_at || "", cb = b.created_at || ""; return ca < cb ? 1 : (ca > cb ? -1 : 0); });
+  galPics.forEach(function(g){ pics.push({image_url:g.image_url, title:g.caption || ""}); });
   pics.forEach(function(p){ slides.push({kind:"img", html:'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||"")+'" loading="lazy" />'+(p.title?'<div class="ss-cap">'+esc(p.title)+'</div>':"")}); });
   if(!slides.length){
     var gal = (DATA.gallery||[]).length ? DATA.gallery.map(function(g){ return {src:g.image_url, caption:g.caption}; }) : SAMPLE_GALLERY;
@@ -374,7 +380,13 @@ function renderPublic(){
   var sorted = (DATA.notices||[]).map(function(n){ return {date:n.notice_date||"", title:n.title, body:n.body}; }).sort(function(a,b){ return (b.date||"").localeCompare(a.date||""); });
   var hn = document.getElementById("home-notices"); if(hn) hn.innerHTML = sorted.length ? sorted.slice(0,3).map(noticeHTML).join("") : (dataLoaded ? '<div class="empty-note">'+t("empty_notice")+'</div>' : '<div class="empty-note">তথ্য লোড হচ্ছে…</div>');
   var nl = document.getElementById("notice-list"); if(nl) nl.innerHTML = sorted.length ? sorted.map(noticeHTML).join("") : (dataLoaded ? '<div class="empty-note">'+t("empty_notice")+'</div>' : '<div class="empty-note">তথ্য লোড হচ্ছে…</div>');
-  var gal = (DATA.gallery||[]).length ? DATA.gallery.map(function(g){ return {id:g.id, src:g.image_url, caption:g.caption}; }) : SAMPLE_GALLERY;
+  var gal = (DATA.gallery||[]).length || (DATA.slides||[]).length ? (function(){
+    var out = [], seen = {};
+    (DATA.gallery||[]).forEach(function(g){ if(g.image_url && !seen[g.image_url]){ seen[g.image_url] = true; out.push({id:g.id, src:g.image_url, caption:g.caption, created_at:g.created_at || ""}); } });
+    (DATA.slides||[]).forEach(function(s){ if(s.kind==="image" && s.image_url && !seen[s.image_url]){ seen[s.image_url] = true; out.push({id:s.id, src:s.image_url, caption:s.title || "", created_at:s.created_at || ""}); } });
+    out.sort(function(a, b){ return a.created_at < b.created_at ? 1 : (a.created_at > b.created_at ? -1 : 0); });
+    return out.length ? out : SAMPLE_GALLERY;
+  })() : SAMPLE_GALLERY;
   var gg = document.getElementById("gallery-grid"); if(gg) gg.innerHTML = gal.map(galHTML).join("");
   var at = document.getElementById("about-text"); if(at) at.textContent = about;
   var tw = document.getElementById("teacher-wrap");
