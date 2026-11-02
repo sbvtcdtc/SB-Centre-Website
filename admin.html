@@ -27,7 +27,7 @@
 <div class="card"><h2>Add Student (photo optional)</h2>
 <label>Roll</label><input id="s-roll"><label>Name</label><input id="s-name"><label>Course</label><input id="s-course">
 <label>Batch</label><input id="s-batch"><label>Photo (optional)</label><input id="s-photo" type="file" accept="image/*">
-<button class="btn" onclick="addStudent()">Add student</button><p id="msg-student"></p></div>
+<button class="btn" onclick="addStudent()">Add student</button><p id="msg-student"></p><div id="student-list"></div></div>
 
 <div class="card"><h2>Certificate Generator (approved design)</h2>
 <p>Issue date = the date you download the PDF (date only, no time). Re-downloading an issued certificate below does NOT create a duplicate record.</p>
@@ -40,23 +40,23 @@
 <div id="cert-list"></div></div>
 
 <div class="card"><h2>Notice</h2><label>Title</label><input id="n-title"><label>Body</label><textarea id="n-body"></textarea><label>Date</label><input id="n-date" type="date">
-<button class="btn" onclick="addNotice()">Add notice</button><p id="msg-notice"></p></div>
+<button class="btn" onclick="addNotice()">Add notice</button><p id="msg-notice"></p><div id="notice-list"></div></div>
 
 <div class="card"><h2>Gallery photo</h2><label>Caption</label><input id="g-cap"><label>Photo</label><input id="g-file" type="file" accept="image/*">
-<button class="btn" onclick="addGallery()">Upload photo</button><p id="msg-gallery"></p></div>
+<button class="btn" onclick="addGallery()">Upload photo</button><p id="msg-gallery"></p><div id="gallery-list"></div></div>
 
 <div class="card"><h2>Teacher (1 teacher)</h2><label>Name</label><input id="t-name"><label>Title</label><input id="t-title"><label>About</label><textarea id="t-about"></textarea><label>Photo (optional)</label><input id="t-photo" type="file" accept="image/*">
-<button class="btn" onclick="saveTeacher()">Save teacher</button><p id="msg-teacher"></p></div>
+<button class="btn" onclick="saveTeacher()">Save teacher</button><p id="msg-teacher"></p><div id="teacher-list"></div></div>
 
 <div class="card"><h2>Achievement (centre)</h2><label>Title</label><input id="a-title"><label>Detail</label><textarea id="a-detail"></textarea>
-<button class="btn" onclick="addAch()">Add achievement</button><p id="msg-ach"></p></div>
+<button class="btn" onclick="addAch()">Add achievement</button><p id="msg-ach"></p><div id="ach-list"></div></div>
 
 <div class="card"><h2>Success Story (student, separate from Achievement)</h2><label>Student name</label><input id="st-name"><label>Story</label><textarea id="st-story"></textarea><label>Photo (optional)</label><input id="st-photo" type="file" accept="image/*">
-<button class="btn" onclick="addStory()">Add success story</button><p id="msg-story"></p></div>
+<button class="btn" onclick="addStory()">Add success story</button><p id="msg-story"></p><div id="story-list"></div></div>
 
 <div class="card"><h2>Home Slideshow</h2><label>Video URL (YouTube / mp4) — if empty, pictures slide instead</label><input id="sl-video">
 <label>Picture (optional slide picture)</label><input id="sl-file" type="file" accept="image/*">
-<button class="btn" onclick="addSlide()">Add slide</button><p id="msg-slide"></p></div>
+<button class="btn" onclick="addSlide()">Add slide</button><p id="msg-slide"></p><div id="slide-list"></div></div>
 </div>
 </main>
 <script src="config.js"></script><script src="admin.js"></script>

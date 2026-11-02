@@ -22,7 +22,7 @@ async function showAdmin(email){
   const s = (await sb.from('site_settings').select('*').eq('id',1).single()).data || {};
   $('#f-address').value=s.address||''; $('#f-phone').value=s.phone||''; $('#f-email').value=s.email||'';
   $('#f-wa').value=s.whatsapp_number||''; $('#f-fb').value=s.facebook_url||''; $('#f-hours').value=s.hours||'';
-  loadCertList();
+  loadCertList(); loadAdminLists();
 }
 async function requireAuth(){ const {data} = await sb.auth.getSession(); if(!data.session){ alert('Please log in first.'); throw new Error('not logged in'); } }
 async function upload(file){
@@ -35,10 +35,42 @@ async function upload(file){
 async function saveSettings(){ await requireAuth();
   const {error} = await sb.from('site_settings').update({address:$('#f-address').value,phone:$('#f-phone').value,email:$('#f-email').value,whatsapp_number:$('#f-wa').value.replace(/\D/g,''),facebook_url:$('#f-fb').value,hours:$('#f-hours').value}).eq('id',1);
   $('#msg-settings').textContent = error ? error.message : 'Saved. Public site updates in realtime.'; }
+
+async function deleteRow(table, id, msgId){
+  await requireAuth();
+  if(!confirm('Are you sure you want to delete this? This cannot be undone.')) return;
+  const {error} = await sb.from(table).delete().eq('id', id);
+  if(msgId) document.getElementById(msgId).textContent = error ? error.message : 'Deleted.';
+  loadAdminLists(); loadCertList();
+}
+function listHtml(title, rows, label){
+  if(!rows || !rows.length) return '<h3>'+title+'</h3><p>Nothing here yet.</p>';
+  return '<h3>'+title+'</h3>' + rows.map(r=>`<p>${esc(label(r))} <button class="btn secondary" data-del="${r._table}:${r.id}">Delete</button></p>`).join('');
+}
+function bindDeletes(el){
+  el.querySelectorAll('[data-del]').forEach(b=>{ b.onclick = async ()=>{ const [table,id]=b.dataset.del.split(':'); await deleteRow(table, id); }; });
+}
+async function loadAdminLists(){
+  const get = async (table)=>{ const {data} = await sb.from(table).select('*').order('created_at',{ascending:false}); return data||[]; };
+  const sets = [
+    ['student-list','Students', await get('students'), r=> (r.roll+' • '+r.name)],
+    ['notice-list','Notices', await get('notices'), r=> (r.title||'')],
+    ['gallery-list','Gallery photos', await get('gallery_items'), r=> (r.caption||r.image_url||'')],
+    ['teacher-list','Teacher', await get('teachers'), r=> (r.name||'(no name)')],
+    ['ach-list','Achievements', await get('achievements'), r=> (r.title||'')],
+    ['story-list','Success stories', await get('success_stories'), r=> (r.student_name||'')],
+    ['slide-list','Slideshow slides', await get('slideshow_items'), r=> (r.kind==='video' ? ('Video: '+(r.video_url||'')) : ('Picture: '+(r.image_url||'')))],
+  ];
+  for(const [elId, title, rows, label] of sets){
+    const el = document.getElementById(elId); if(!el) continue;
+    rows.forEach(r=> r._table = { 'student-list':'students','notice-list':'notices','gallery-list':'gallery_items','teacher-list':'teachers','ach-list':'achievements','story-list':'success_stories','slide-list':'slideshow_items'}[elId]);
+    el.innerHTML = listHtml(title, rows, label); bindDeletes(el);
+  }
+}
 async function addStudent(){ await requireAuth();
   const photo = await upload($('#s-photo').files[0]);
   const {error} = await sb.from('students').insert({roll:$('#s-roll').value.trim(),name:$('#s-name').value.trim(),course:$('#s-course').value.trim(),batch:$('#s-batch').value.trim(),photo_url:photo});
-  $('#msg-student').textContent = error ? error.message : 'Student added.'; }
+  $('#msg-student').textContent = error ? error.message : 'Student added.'; if(!error) loadAdminLists(); }
 function certNode(c){
   const d = document.createElement('div');
   d.innerHTML = `<div class="cert"><div class="cert-in"><img src="assets/IMG-20261102-WA0023.jpg" style="width:70px;height:70px;object-fit:cover;border-radius:50%" alt="">
@@ -72,33 +104,34 @@ async function issueCert(){ await requireAuth();
 async function loadCertList(){
   const {data} = await sb.from('certificates').select('*').order('created_at',{ascending:false});
   $('#cert-list').innerHTML = '<h3>Previously issued certificates — re-download (no duplicate record)</h3>' +
-    (data||[]).map(c=>`<p>${esc(c.student_name)} • ${esc(c.license_no)} <button class="btn secondary" data-dl="${c.id}">Download PDF</button></p>`).join('');
+    (data||[]).map(c=>`<p>${esc(c.student_name)} • ${esc(c.license_no)} <button class="btn secondary" data-dl="${c.id}">Download PDF</button> <button class="btn secondary" data-del-cert="${c.id}">Delete</button></p>`).join('');
   $('#cert-list').querySelectorAll('[data-dl]').forEach(b=>{ b.onclick = async ()=>{ const c=(data||[]).find(x=>x.id===b.dataset.dl); if(c) await downloadNode(certNode(c), c.student_name); }; });
+  $('#cert-list').querySelectorAll('[data-del-cert]').forEach(b=>{ b.onclick = async ()=>{ await deleteRow('certificates', b.dataset.delCert, 'msg-cert'); }; });
 }
 async function addNotice(){ await requireAuth();
   const {error} = await sb.from('notices').insert({title:$('#n-title').value.trim(),body:$('#n-body').value.trim(),notice_date:$('#n-date').value||null});
-  $('#msg-notice').textContent = error ? error.message : 'Notice added.'; }
+  $('#msg-notice').textContent = error ? error.message : 'Notice added.'; if(!error) loadAdminLists(); }
 async function addGallery(){ await requireAuth();
   const url = await upload($('#g-file').files[0]); if(!url){ $('#msg-gallery').textContent='Choose a photo first.'; return; }
   const {error} = await sb.from('gallery_items').insert({caption:$('#g-cap').value.trim(),image_url:url});
-  $('#msg-gallery').textContent = error ? error.message : 'Photo added.'; }
+  $('#msg-gallery').textContent = error ? error.message : 'Photo added.'; if(!error) loadAdminLists(); }
 async function saveTeacher(){ await requireAuth();
   const photo = await upload($('#t-photo').files[0]);
   const {data} = await sb.from('teachers').select('id').limit(1);
   const row = {name:$('#t-name').value.trim(),title:$('#t-title').value.trim(),about:$('#t-about').value.trim()};
   if(photo) row.photo_url = photo;
   const {error} = data && data[0] ? await sb.from('teachers').update(row).eq('id',data[0].id) : await sb.from('teachers').insert(row);
-  $('#msg-teacher').textContent = error ? error.message : 'Teacher saved.'; }
+  $('#msg-teacher').textContent = error ? error.message : 'Teacher saved.'; if(!error) loadAdminLists(); }
 async function addAch(){ await requireAuth();
   const {error} = await sb.from('achievements').insert({title:$('#a-title').value.trim(),detail:$('#a-detail').value.trim()});
-  $('#msg-ach').textContent = error ? error.message : 'Achievement added.'; }
+  $('#msg-ach').textContent = error ? error.message : 'Achievement added.'; if(!error) loadAdminLists(); }
 async function addStory(){ await requireAuth();
   const photo = await upload($('#st-photo').files[0]);
   const {error} = await sb.from('success_stories').insert({student_name:$('#st-name').value.trim(),story:$('#st-story').value.trim(),photo_url:photo});
-  $('#msg-story').textContent = error ? error.message : 'Success story added.'; }
+  $('#msg-story').textContent = error ? error.message : 'Success story added.'; if(!error) loadAdminLists(); }
 async function addSlide(){ await requireAuth();
   const url = await upload($('#sl-file').files[0]);
   const video = $('#sl-video').value.trim();
   const {error} = await sb.from('slideshow_items').insert({kind: video ? 'video':'image', video_url:video, image_url:url});
-  $('#msg-slide').textContent = error ? error.message : 'Slide added. If no video slide exists, pictures slide automatically.'; }
+  $('#msg-slide').textContent = error ? error.message : 'Slide added. If no video slide exists, pictures slide automatically.'; if(!error) loadAdminLists(); }
 document.addEventListener('DOMContentLoaded', init);
