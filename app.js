@@ -398,7 +398,7 @@ function renderPublic(){
 }
 
 /* ---------- QR verification ---------- */
-function verifyUrl(lic){ return "https://abubakarriyad1234-ux.github.io/SB-Centre-Website/?verify=" + encodeURIComponent(lic); }
+function verifyUrl(lic){ return "https://sbvtcdtc.github.io/SB-Centre-Website/?verify=" + encodeURIComponent(lic); }
 async function setCertQR(imgEl, lic){
   if(!imgEl) return;
   if(!lic){ imgEl.removeAttribute("src"); return; }

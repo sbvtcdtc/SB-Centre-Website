@@ -169,7 +169,7 @@ async function addGallery(){
   if(!r.error) await loadAll();
 }
 /* ---------- QR verification ---------- */
-function verifyUrl(lic){ return "https://abubakarriyad1234-ux.github.io/SB-Centre-Website/?verify=" + encodeURIComponent(lic); }
+function verifyUrl(lic){ return "https://sbvtcdtc.github.io/SB-Centre-Website/?verify=" + encodeURIComponent(lic); }
 async function setPreviewQR(lic){
   var imgEl = document.getElementById("pc-qr");
   if(!imgEl) return;
