@@ -248,7 +248,10 @@ document.addEventListener("DOMContentLoaded", function(){
   var prev = document.getElementById("ss-prev"); if(prev) prev.addEventListener("click", function(){ goSlide(ssIdx-1); });
   var next = document.getElementById("ss-next"); if(next) next.addEventListener("click", function(){ goSlide(ssIdx+1); });
   applyLang(); renderPublic();
-  loadData().then(function(){ applyLang(); renderPublic(); subscribeRealtime(); handleVerifyParam(); });
+  var hideLoader = function(){ var l = document.getElementById("page-loader"); if(l) l.style.display = "none"; };
+  // Safety: never trap the page behind the loader if data fails to load.
+  setTimeout(hideLoader, 10000);
+  loadData().then(function(){ applyLang(); renderPublic(); subscribeRealtime(); handleVerifyParam(); hideLoader(); }, hideLoader);
 });
 
 /* ---------- render helpers (template markup) ---------- */
