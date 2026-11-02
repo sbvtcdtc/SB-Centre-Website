@@ -136,7 +136,9 @@ async function saveTeacher(){
 }
 async function addAch(){
   await requireAuth();
-  var r = await sb.from("achievements").insert({title:$("#a-title").value.trim(), detail:$("#a-detail").value.trim(), achieved_date:$("#a-date").value||null});
+  var photo = "";
+  try { photo = await upload($("#a-photo").files[0]); } catch(e){ $("#a-msg").textContent = "Photo upload failed: " + (e.message || e) + " — Storage policy SQL run kore abar try korun."; return; }
+  var r = await sb.from("achievements").insert({title:$("#a-title").value.trim(), detail:$("#a-detail").value.trim(), achieved_date:$("#a-date").value||null, photo_url:photo});
   $("#a-msg").textContent = r.error ? r.error.message : "Achievement added.";
   if(!r.error) await loadAll();
 }

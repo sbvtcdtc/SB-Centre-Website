@@ -370,7 +370,7 @@ function renderPublic(){
   var ag = document.getElementById("ach-grid");
   if(ag){
     var ach = DATA.achievements||[];
-    ag.innerHTML = ach.length ? ach.map(function(a){ var y = a.achieved_date ? String(a.achieved_date).slice(0,4) : ""; return '<article class="ach-card">'+(y?'<span class="ach-year">'+esc(y)+'</span>':"")+'<h3>'+esc(a.title)+'</h3><p>'+esc(a.detail||"")+'</p></article>'; }).join("") : '<div class="empty-note">'+t("empty_ach")+'</div>';
+    ag.innerHTML = ach.length ? ach.map(function(a){ var y = a.achieved_date ? String(a.achieved_date).slice(0,4) : ""; return '<article class="ach-card">'+(a.photo_url?'<img src="'+esc(a.photo_url)+'" alt="" style="width:100%;height:180px;object-fit:cover;border-radius:8px;margin-bottom:12px" />':"")+(y?'<span class="ach-year">'+esc(y)+'</span>':"")+'<h3>'+esc(a.title)+'</h3><p>'+esc(a.detail||"")+'</p></article>'; }).join("") : '<div class="empty-note">'+t("empty_ach")+'</div>';
   }
   var sg = document.getElementById("success-grid");
   if(sg){
