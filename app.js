@@ -250,7 +250,7 @@ document.addEventListener("DOMContentLoaded", function(){
   applyLang(); renderPublic();
   var hideLoader = function(){ var l = document.getElementById("page-loader"); if(l) l.style.display = "none"; };
   // Safety: never trap the page behind the loader if data fails to load.
-  setTimeout(hideLoader, 10000);
+  setTimeout(hideLoader, 3000);
   loadData().then(function(){ applyLang(); renderPublic(); subscribeRealtime(); handleVerifyParam(); hideLoader(); }, hideLoader);
 });
 
