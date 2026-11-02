@@ -41,7 +41,7 @@ async function addStudent(){ await requireAuth();
   $('#msg-student').textContent = error ? error.message : 'Student added.'; }
 function certNode(c){
   const d = document.createElement('div');
-  d.innerHTML = `<div class="cert"><div class="cert-in"><img src="assets/logo.jpg" style="width:70px;height:70px;object-fit:cover;border-radius:50%" alt="">
+  d.innerHTML = `<div class="cert"><div class="cert-in"><img src="assets/IMG-20261102-WA0023.jpg" style="width:70px;height:70px;object-fit:cover;border-radius:50%" alt="">
   <div class="c-centre">SB Vocational Training Centre</div><div class="c-license">LICENSE NO: <b>${esc(c.license_no)}</b></div>
   <div class="c-level">LEVEL-${esc(c.level)}</div><div class="c-jp">修了証明書</div><div class="c-en">Certificate of Completion</div>
   <div class="c-name">${esc(c.student_name)}</div>

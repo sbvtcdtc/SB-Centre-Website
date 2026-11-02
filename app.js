@@ -54,7 +54,7 @@ function studentCard(s){
 function certHTML(c){
   const issue = c.issue_date || new Date().toISOString().slice(0,10);
   const fmt = d => d ? new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}) : '';
-  return `<div class="cert"><div class="cert-in"><img src="assets/logo.jpg" style="width:70px;height:70px;object-fit:cover;border-radius:50%" alt="SB logo">
+  return `<div class="cert"><div class="cert-in"><img src="assets/IMG-20261102-WA0023.jpg" style="width:70px;height:70px;object-fit:cover;border-radius:50%" alt="SB logo">
   <div class="c-centre">SB Vocational Training Centre</div>
   <div class="c-license">LICENSE NO: <b>${esc(c.license_no)}</b></div>
   <div class="c-level">LEVEL-${esc(c.level||'N5')}</div>
