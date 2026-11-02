@@ -78,6 +78,8 @@ async function loadAll(){
   var gallery = await getAll("gallery_items");
   $("#gal-admin-grid").innerHTML = gallery.map(function(g){ return '<div class="gal-admin-item"><img src="'+esc(g.image_url)+'" alt="" /><div class="cap"><span>'+esc(g.caption||"")+'</span>'+delBtn("gallery_items", g.id)+'</div></div>'; }).join("");
   var certs = await getAll("certificates");
+  lastCertSeq = 0;
+  certs.forEach(function(c){ var m = String(c.license_no || "").match(/(\d+)\s*$/); if(m) lastCertSeq = Math.max(lastCertSeq, parseInt(m[1], 10) || 0); });
   $("#cert-tbody").innerHTML = certs.map(function(c){ return "<tr><td>"+esc(c.student_name)+"</td><td>"+esc(c.license_no)+"</td><td><div class=\"rowbtns\"><button type=\"button\" class=\"mini-btn\" data-dl-cert=\""+c.id+"\">ডাউনলোড</button>"+delBtn("certificates", c.id)+"</div></td></tr>"; }).join("");
   $("#cert-tbody").querySelectorAll("[data-dl-cert]").forEach(function(b){
     b.addEventListener("click", function(){ var c = certs.find(function(x){ return x.id===b.getAttribute("data-dl-cert"); }); if(c) downloadCertRecord(c); });
@@ -87,6 +89,7 @@ async function loadAll(){
   $("#d-notices").textContent = notices.length;
   $("#d-photos").textContent = gallery.length;
   bindDeletes(document);
+  fillNextLicense();
   updateCertPreview();
 }
 function fillCourseForm(courses){
@@ -214,6 +217,24 @@ function certBodies(rec){
   return {jp:jp, en:en};
 }
 
+/* Auto next license: SBVTC/<LEVEL>/<YEAR>/<SEQ>, SEQ is global across
+   levels, one more than the highest existing certificate number. */
+var lastCertSeq = 0;
+var autoLic = null;
+function nextLicense(level){
+  var y = new Date().getFullYear();
+  return "SBVTC/" + (level || "N5") + "/" + y + "/" + String(lastCertSeq + 1).padStart(5, "0");
+}
+function fillNextLicense(){
+  var lic = document.getElementById("c-license");
+  var lvl = document.getElementById("c-level");
+  if(!lic) return;
+  // Fill when empty, or refresh the level part of an auto-generated number.
+  if(!lic.value.trim() || (autoLic && lic.value.trim() === autoLic)){
+    autoLic = nextLicense(lvl ? lvl.value : "N5");
+    lic.value = autoLic;
+  }
+}
 function certRecordFromForm(){
   var today = new Date().toISOString().slice(0,10);
   return {student_name:$("#c-name").value.trim(), license_no:$("#c-license").value.trim(), level:$("#c-level").value,
@@ -310,6 +331,8 @@ document.addEventListener("DOMContentLoaded", function(){
   ["c-name","c-license","c-level","c-course","c-start","c-end","c-months","c-hours"].forEach(function(id){
     var el = document.getElementById(id); if(el) el.addEventListener("input", updateCertPreview);
   });
+  var cl = document.getElementById("c-level"); if(cl) cl.addEventListener("change", function(){ fillNextLicense(); updateCertPreview(); });
+  var cli = document.getElementById("c-license"); if(cli) cli.addEventListener("input", function(){ if(cli.value.trim() !== autoLic) autoLic = null; });
   ["c-start","c-end"].forEach(function(id){
     var el = document.getElementById(id); if(el) el.addEventListener("change", function(){ autoMonthsHours(); updateCertPreview(); });
   });
