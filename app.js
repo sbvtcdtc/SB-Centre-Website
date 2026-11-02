@@ -184,6 +184,13 @@ async function loadData(){
     DATA.gallery = await q("gallery_items");
     DATA.teachers = await q("teachers");
     DATA.achievements = await q("achievements");
+    // Newest achievement date first (undated last, then newest entry first).
+    DATA.achievements.sort(function(a, b){
+      var da = a.achieved_date || "", db = b.achieved_date || "";
+      if(da !== db) return da < db ? 1 : -1;
+      var ca = a.created_at || "", cb = b.created_at || "";
+      return ca < cb ? 1 : (ca > cb ? -1 : 0);
+    });
     DATA.stories = await q("success_stories");
     DATA.slides = await q("slideshow_items");
     return true;
