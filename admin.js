@@ -117,14 +117,16 @@ async function addNotice(){
 }
 async function addStudent(){
   await requireAuth();
-  var photo = await upload($("#s-photo").files[0]);
+  var photo = "";
+  try { photo = await upload($("#s-photo").files[0]); } catch(e){ $("#s-msg").textContent = "Photo upload failed: " + (e.message || e) + " — Storage policy SQL run kore abar try korun."; return; }
   var r = await sb.from("students").insert({roll:$("#s-roll").value.trim(), name:$("#s-name").value.trim(), course:$("#s-course").value, batch:$("#s-batch").value.trim(), session:$("#s-session").value.trim(), photo_url:photo});
   $("#s-msg").textContent = r.error ? r.error.message : "Student added.";
   if(!r.error) await loadAll();
 }
 async function saveTeacher(){
   await requireAuth();
-  var photo = await upload($("#t-photo").files[0]);
+  var photo = "";
+  try { photo = await upload($("#t-photo").files[0]); } catch(e){ $("#t-msg").textContent = "Photo upload failed: " + (e.message || e) + " — Storage policy SQL run kore abar try korun."; return; }
   var row = {name:$("#t-name").value.trim(), title:$("#t-title").value.trim(), about:$("#t-about").value.trim()};
   if(photo) row.photo_url = photo;
   var existing = await getAll("teachers");
@@ -140,14 +142,16 @@ async function addAch(){
 }
 async function addStory(){
   await requireAuth();
-  var photo = await upload($("#st-photo").files[0]);
+  var photo = "";
+  try { photo = await upload($("#st-photo").files[0]); } catch(e){ $("#st-msg").textContent = "Photo upload failed: " + (e.message || e) + " — Storage policy SQL run kore abar try korun."; return; }
   var r = await sb.from("success_stories").insert({student_name:$("#st-name").value.trim(), story:$("#st-story").value.trim(), photo_url:photo});
   $("#st-msg").textContent = r.error ? r.error.message : "Success story added.";
   if(!r.error) await loadAll();
 }
 async function addSlide(){
   await requireAuth();
-  var url = await upload($("#sl-file").files[0]);
+  var url = "";
+  try { url = await upload($("#sl-file").files[0]); } catch(e){ $("#sl-msg").textContent = "Photo upload failed: " + (e.message || e) + " — Storage policy SQL run kore abar try korun."; return; }
   var video = $("#sl-video").value.trim();
   var r = await sb.from("slideshow_items").insert({kind: video ? "video" : "image", video_url: video, image_url: url, title: $("#sl-title").value.trim()});
   $("#sl-msg").textContent = r.error ? r.error.message : "Slide added.";
@@ -155,7 +159,8 @@ async function addSlide(){
 }
 async function addGallery(){
   await requireAuth();
-  var url = await upload($("#g-file").files[0]);
+  var url = "";
+  try { url = await upload($("#g-file").files[0]); } catch(e){ $("#g-msg").textContent = "Photo upload failed: " + (e.message || e) + " — Storage policy SQL run kore abar try korun."; return; }
   if(!url){ $("#g-msg").textContent = "Choose a photo first."; return; }
   var r = await sb.from("gallery_items").insert({caption:$("#g-cap").value.trim(), image_url:url});
   $("#g-msg").textContent = r.error ? r.error.message : "Photo added.";
