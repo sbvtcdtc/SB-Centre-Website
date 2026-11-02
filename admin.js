@@ -166,6 +166,39 @@ async function addGallery(){
   $("#g-msg").textContent = r.error ? r.error.message : "Photo added.";
   if(!r.error) await loadAll();
 }
+/* ---------- QR verification ---------- */
+function verifyUrl(lic){ return "https://abubakarriyad1234-ux.github.io/SB-Centre-Website/?verify=" + encodeURIComponent(lic); }
+async function setPreviewQR(lic){
+  var imgEl = document.getElementById("pc-qr");
+  if(!imgEl) return;
+  if(!lic){ imgEl.removeAttribute("src"); return; }
+  if(typeof QRCode === "undefined") return;
+  try { imgEl.src = await QRCode.toDataURL(verifyUrl(lic), {width:192, margin:1}); } catch(e){}
+}
+
+function fmtDateJp(iso){
+  if(!iso) return "";
+  var a = String(iso).split("-");
+  return a.length===3 ? a[0]+" 年 "+a[1]+" 月 "+a[2]+" 日" : iso;
+}
+function monthsWord(n){
+  var w = ["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve"];
+  return w[n] || String(n);
+}
+function certBodies(rec){
+  var months = parseInt(rec.duration_months)||3;
+  var hours = rec.hours||180;
+  var course = rec.course_name||"Basic Japanese Language Course";
+  var jp = "";
+  if(rec.start_date && rec.end_date){
+    jp = "あなたは当センターが主催する " + fmtDateJp(rec.start_date) + "から " + fmtDateJp(rec.end_date) + "まで " + String(months).padStart(2,"0") + " ヶ月間 " + hours + "時間以上の日本語能力講座の基礎課程を修了したことを証明いたします。";
+  } else {
+    jp = "あなたは当センターが主催する日本語能力講座の基礎課程を修了したことを証明いたします。";
+  }
+  var en = "This is to certify that the above-named trainee has successfully completed the " + course + " conducted by SB Vocational Training Centre, comprising a minimum of " + hours + " hours over a period of " + monthsWord(months) + " months.";
+  return {jp:jp, en:en};
+}
+
 function certRecordFromForm(){
   var today = new Date().toISOString().slice(0,10);
   return {student_name:$("#c-name").value.trim(), license_no:$("#c-license").value.trim(), level:$("#c-level").value,
@@ -178,8 +211,12 @@ function updateCertPreview(){
   $("#pc-license").textContent = rec.license_no || "—";
   $("#pc-level").textContent = rec.level || "N5";
   $("#pc-name").textContent = rec.student_name || "STUDENT NAME";
-  $("#pc-body").innerHTML = "has successfully completed the <b>"+esc(rec.course_name)+"</b> ("+esc(rec.hours)+" hours) at SB Vocational Training Centre"+(period?", during the period <b>"+esc(period)+"</b>":"")+", and is hereby awarded this certificate in recognition of successful completion of the course requirements.";
+  var b = certBodies(rec);
+  $("#pc-body-jp").textContent = b.jp;
+  $("#pc-body").textContent = b.en;
   $("#pc-date").textContent = fmtEn(rec.issue_date);
+  $("#pc-foot-level").textContent = rec.level || "N5";
+  setPreviewQR(rec.license_no);
 }
 async function downloadNode(node, name){
   var canvas = await html2canvas(node, {scale:2, backgroundColor:"#fffdf6", useCORS:true});
@@ -195,6 +232,7 @@ async function issueCert(){
   var r = await sb.from("certificates").upsert(rec, {onConflict:"license_no"});
   if(r.error){ $("#c-msg").textContent = r.error.message; return; }
   updateCertPreview();
+  await setPreviewQR(rec.license_no);
   await downloadNode(document.getElementById("cert-preview"), rec.student_name);
   $("#c-msg").textContent = "Saved + downloaded. Issue date: "+rec.issue_date;
   await loadAll();
@@ -206,8 +244,12 @@ async function downloadCertRecord(c){
   $("#c-months").value = c.duration_months; $("#c-hours").value = c.hours;
   var period = (c.start_date && c.end_date) ? fmtEn(c.start_date)+" – "+fmtEn(c.end_date) : "";
   $("#pc-license").textContent = c.license_no; $("#pc-level").textContent = c.level; $("#pc-name").textContent = c.student_name;
-  $("#pc-body").innerHTML = "has successfully completed the <b>"+esc(c.course_name)+"</b> ("+esc(c.hours)+" hours) at SB Vocational Training Centre"+(period?", during the period <b>"+esc(period)+"</b>":"")+", and is hereby awarded this certificate in recognition of successful completion of the course requirements.";
+  var b2 = certBodies(c);
+  $("#pc-body-jp").textContent = b2.jp;
+  $("#pc-body").textContent = b2.en;
   $("#pc-date").textContent = fmtEn(c.issue_date);
+  $("#pc-foot-level").textContent = c.level || "N5";
+  await setPreviewQR(c.license_no);
   await downloadNode(document.getElementById("cert-preview"), c.student_name);
   toast("Downloaded.");
 }

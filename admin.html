@@ -251,21 +251,26 @@ table.tbl{width:100%;border-collapse:collapse;font-size:.94rem}
 .cert-scroll{overflow-x:auto;padding:6px}
 .cert{width:1050px;height:742px;background:#fffdf6;color:#1c2434;border:3px solid #1d2f52;outline:10px solid #fffdf6;box-shadow:0 0 0 13px #c73e2c, 0 18px 50px rgba(0,0,0,.25);margin:14px auto;padding:44px 58px;position:relative;font-family:"Noto Serif Bengali",serif;text-align:center;flex:none}
 .cert .c-logo{width:74px;height:74px;border-radius:50%;background:#1d2f52;color:#fff;border:3px solid #c73e2c;display:grid;place-items:center;font-weight:800;font-size:1.5rem;margin:0 auto 8px}
-.cert .c-logo-img{width:86px;height:86px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 6px;background:#fff}
+.cert .c-logo-img{width:86px;height:86px;border-radius:50%;object-fit:cover;display:block;position:absolute;top:44px;left:58px;margin:0;background:#fff}
 .cert .c-centre{font-size:1.72rem;font-weight:800;color:#1d2f52;margin:0;line-height:1.25}
-.cert .c-license{font-family:"Hind Siliguri",sans-serif;font-weight:700;letter-spacing:.14em;font-size:.95rem;color:#c73e2c;margin:5px 0 2px}
-.cert .c-level{font-family:"Hind Siliguri",sans-serif;font-weight:700;letter-spacing:.3em;font-size:.9rem;color:#4a5468;margin:0}
-.cert .c-jp{font-family:"Noto Sans JP",sans-serif;font-weight:900;font-size:2rem;color:#1d2f52;margin:20px 0 2px}
-.cert .c-en{font-family:"Hind Siliguri",sans-serif;font-size:1.02rem;letter-spacing:.22em;color:#4a5468;margin:0;text-transform:uppercase}
-.cert .c-this{font-family:"Hind Siliguri",sans-serif;color:#4a5468;margin:20px 0 4px;font-size:1rem}
-.cert .c-name{font-size:2.15rem;font-weight:800;margin:0;color:#1c2434;border-bottom:2px solid #b98a2f;display:inline-block;padding:0 34px 4px}
-.cert .c-body{font-family:"Hind Siliguri",sans-serif;font-size:1.04rem;color:#333d52;max-width:760px;margin:16px auto 0;line-height:1.75}
+.cert .c-license{font-family:"Hind Siliguri",sans-serif;font-weight:700;letter-spacing:.02em;font-size:.95rem;color:#1c2434;margin:5px 0 2px}
+.cert .c-level{font-family:"Hind Siliguri",sans-serif;font-weight:700;letter-spacing:.12em;font-size:.9rem;color:#4a5468;margin:0}
+.cert .c-jp{font-family:"Noto Sans JP",sans-serif;font-weight:900;font-size:2.5rem;letter-spacing:.3em;color:#1d2f52;margin:20px 0 2px}
+.cert .c-en{font-family:"Hind Siliguri",sans-serif;font-size:1.02rem;font-style:italic;letter-spacing:0;color:#4a5468;margin:0}
+
+.cert .c-name{font-size:2.15rem;font-weight:800;margin:0;color:#1c2434}
+.cert .c-body{font-family:"Hind Siliguri",sans-serif;font-size:.98rem;color:#333d52;max-width:820px;margin:14px auto 0;line-height:1.75}
+.cert .c-body-jp{font-family:"Noto Sans JP",sans-serif;font-size:1.12rem;color:#1c2434;max-width:860px;margin:22px auto 0;line-height:1.9}
 .cert .c-date{font-family:"Hind Siliguri",sans-serif;font-weight:600;margin-top:20px;font-size:1rem}
 .cert .c-divider{border:0;border-top:1.5px solid #c9bda0;margin:8px auto 0;width:88%}
 .cert .c-sigs{display:flex;justify-content:space-between;width:88%;margin:46px auto 0;font-family:"Hind Siliguri",sans-serif}
-.cert .c-sig{width:250px;text-align:center}
-.cert .c-sig .line{border-top:1.6px solid #1c2434;margin-bottom:7px}
-.cert .c-sig b{display:block;font-size:.98rem}
+.c-qr{position:absolute;top:44px;right:58px;width:96px;text-align:center;font-family:"Hind Siliguri",sans-serif}
+.c-qr img{width:96px;height:96px;display:block;background:#fff}
+.c-qr span{display:block;font-size:11px;line-height:1.3;margin-top:4px;color:#4a5468}
+.cert .c-sig{width:320px;text-align:center}
+.cert .c-sig .line{border-top:1.6px dotted #1c2434;margin-bottom:7px}
+.cert .c-sig b{display:block;font-size:.88rem;white-space:nowrap}
+.cert .c-footer{font-family:"Hind Siliguri",sans-serif;font-size:.85rem;letter-spacing:.08em;color:#4a5468;margin:26px auto 0}
 .cert .c-sig span{font-size:.86rem;color:#4a5468}
 .verify-download{margin-top:18px;padding-top:16px;border-top:1px dashed var(--line2);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .verify-download p{margin:0;color:var(--ink2);font-size:.93rem;flex:1;min-width:200px}
@@ -406,14 +411,17 @@ table.tbl{width:100%;border-collapse:collapse;font-size:.94rem}
 <p class="c-centre">SB Vocational Training Centre</p>
 <p class="c-license">LICENSE NO: <span id="pc-license">—</span></p>
 <p class="c-level">LEVEL – <span id="pc-level">N5</span></p>
-<p class="c-jp">日本語コース修了証明書</p>
+<p class="c-jp">修了証明書</p>
 <p class="c-en">Certificate of Completion</p>
-<p class="c-this">This is to certify that</p>
+
 <p class="c-name" id="pc-name">STUDENT NAME</p>
+<p class="c-body-jp" id="pc-body-jp"></p>
 <p class="c-body" id="pc-body"></p>
-<p class="c-date">Issue Date: <span id="pc-date">—</span></p>
+<p class="c-date">Date of Issue: <b><span id="pc-date">—</span></b></p>
+<div class="c-qr"><img id="pc-qr" alt="Scan to verify" /><span>Scan to verify</span></div>
 <hr class="c-divider" />
-<div class="c-sigs"><div class="c-sig"><div class="line"></div><b>Course Coordinator</b><span>SB Vocational Training Centre</span></div><div class="c-sig"><div class="line"></div><b>Director</b><span>SB Vocational Training Centre</span></div></div>
+<div class="c-sigs"><div class="c-sig"><div class="line"></div><b>COORDINATOR</b><span>SB Vocational Training Centre</span></div>
+<p class="c-footer">SB VOCATIONAL TRAINING CENTRE • JAPANESE LANGUAGE TRAINING • LEVEL-<span id="pc-foot-level">N5</span></p><div class="c-sig"><div class="line"></div><b>DIRECTOR / AUTHORIZED SIGNATORY</b><span>SB Vocational Training Centre</span></div></div>
 </div></div></div></div>
 <div class="panel-card"><h3>আগে ইস্যুকৃত সার্টিফিকেট</h3><div class="tbl-wrap"><table class="tbl"><thead><tr><th>নাম</th><th>লাইসেন্স</th><th></th></tr></thead><tbody id="cert-tbody"></tbody></table></div></div></div>
 <div class="admin-panel" id="panel-settings"><div class="panel-card"><h3>সেটিংস</h3>
@@ -425,5 +433,6 @@ table.tbl{width:100%;border-collapse:collapse;font-size:.94rem}
 </main>
 <div class="toast" id="toast"></div>
 <script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script src="admin.js"></script>
 </body></html>

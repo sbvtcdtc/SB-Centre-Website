@@ -239,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function(){
   var prev = document.getElementById("ss-prev"); if(prev) prev.addEventListener("click", function(){ goSlide(ssIdx-1); });
   var next = document.getElementById("ss-next"); if(next) next.addEventListener("click", function(){ goSlide(ssIdx+1); });
   applyLang(); renderPublic();
-  loadData().then(function(){ applyLang(); renderPublic(); subscribeRealtime(); });
+  loadData().then(function(){ applyLang(); renderPublic(); subscribeRealtime(); handleVerifyParam(); });
 });
 
 /* ---------- render helpers (template markup) ---------- */
@@ -390,6 +390,24 @@ function renderPublic(){
   renderSlideshow();
 }
 
+/* ---------- QR verification ---------- */
+function verifyUrl(lic){ return "https://abubakarriyad1234-ux.github.io/SB-Centre-Website/?verify=" + encodeURIComponent(lic); }
+async function setCertQR(imgEl, lic){
+  if(!imgEl) return;
+  if(!lic){ imgEl.removeAttribute("src"); return; }
+  if(typeof QRCode === "undefined") return;
+  try { imgEl.src = await QRCode.toDataURL(verifyUrl(lic), {width:192, margin:1}); } catch(e){}
+}
+function handleVerifyParam(){
+  var v = null;
+  try { v = new URLSearchParams(window.location.search).get("verify"); } catch(e){}
+  if(!v) return;
+  var input = document.getElementById("verify-license");
+  if(input) input.value = v;
+  showView("verify");
+  doVerify();
+}
+
 /* ---------- search + verify ---------- */
 function doSearch(){
   var q = document.getElementById("search-roll").value.trim().toLowerCase();
@@ -419,17 +437,43 @@ function doVerify(){
     '<div><span>'+t("label_issue")+'</span><b>'+fmtDateLoc(c.issue_date)+'</b></div>'+
     '<div><span>'+t("label_issuer")+'</span><b>'+esc((DATA.settings&&DATA.settings.centre_name)||"SB Vocational Training Centre")+'</b></div>'+
     '</div>'+
+    '<div style="margin-top:14px;text-align:center"><img id="verify-qr-img" style="width:96px;height:96px" alt="Scan to verify" /><div style="font-size:.85rem">Scan to verify</div><div style="font-size:.75rem;word-break:break-all">'+esc(verifyUrl(c.license_no))+'</div></div>'+
     '<div class="verify-download"><p>'+t("download_cert_note")+'</p><button type="button" class="btn btn-red btn-sm" data-download-cert="'+esc(c.license_no)+'">'+t("download_cert")+'</button></div></div>';
+  setCertQR(document.getElementById("verify-qr-img"), c.license_no);
 }
+function fmtDateJp(iso){
+  if(!iso) return "";
+  var a = String(iso).split("-");
+  return a.length===3 ? a[0]+" 年 "+a[1]+" 月 "+a[2]+" 日" : iso;
+}
+function monthsWord(n){
+  var w = ["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve"];
+  return w[n] || String(n);
+}
+function certBodies(rec){
+  var months = parseInt(rec.duration_months)||3;
+  var hours = rec.hours||180;
+  var course = rec.course_name||"Basic Japanese Language Course";
+  var jp = "";
+  if(rec.start_date && rec.end_date){
+    jp = "あなたは当センターが主催する " + fmtDateJp(rec.start_date) + "から " + fmtDateJp(rec.end_date) + "まで " + String(months).padStart(2,"0") + " ヶ月間 " + hours + "時間以上の日本語能力講座の基礎課程を修了したことを証明いたします。";
+  } else {
+    jp = "あなたは当センターが主催する日本語能力講座の基礎課程を修了したことを証明いたします。";
+  }
+  var en = "This is to certify that the above-named trainee has successfully completed the " + course + " conducted by SB Vocational Training Centre, comprising a minimum of " + hours + " hours over a period of " + monthsWord(months) + " months.";
+  return {jp:jp, en:en};
+}
+
 function fillDownloadCert(c){
-  var period = "";
-  if(c.start_date && c.end_date) period = fmtDateEn(c.start_date)+" – "+fmtDateEn(c.end_date);
   document.getElementById("rd-centre").textContent = (DATA.settings&&DATA.settings.centre_name)||"SB Vocational Training Centre";
   document.getElementById("rd-license").textContent = c.license_no || "—";
   document.getElementById("rd-level").textContent = c.level || "N5";
   document.getElementById("rd-name").textContent = c.student_name || "STUDENT NAME";
-  document.getElementById("rd-body").innerHTML = "has successfully completed the <b>"+esc(c.course_name||"Basic Japanese Language Course")+"</b> ("+esc(c.hours)+" hours) at "+esc((DATA.settings&&DATA.settings.centre_name)||"SB Vocational Training Centre")+(period?", during the period <b>"+esc(period)+"</b>":"")+", and is hereby awarded this certificate in recognition of successful completion of the course requirements.";
+  var b = certBodies(c);
+  document.getElementById("rd-body-jp").textContent = b.jp;
+  document.getElementById("rd-body").textContent = b.en;
   document.getElementById("rd-date").textContent = fmtDateEn(c.issue_date);
+  document.getElementById("rd-foot-level").textContent = c.level || "N5";
 }
 function downloadIssuedCertificate(license, btn){
   var c = (DATA.certificates||[]).find(function(x){ return String(x.license_no||"").trim().toLowerCase()===String(license||"").trim().toLowerCase(); });
@@ -439,7 +483,8 @@ function downloadIssuedCertificate(license, btn){
   if(btn){ btn.disabled=true; btn.textContent=t("downloading"); }
   fillDownloadCert(c);
   var node = document.getElementById("cert-download-node");
-  setTimeout(function(){
+  setTimeout(async function(){
+    await setCertQR(document.getElementById("rd-qr"), c.license_no);
     html2canvas(node, {scale:2, backgroundColor:"#fffdf6", useCORS:true}).then(function(canvas){
       var imgData = canvas.toDataURL("image/jpeg", 0.95);
       var jsPDF = window.jspdf.jsPDF;
