@@ -330,13 +330,13 @@ function slideshowItems(){
     else if(/\.(mp4|webm|ogg|mov)(\?|#|$)/i.test(video.video_url)) slides.push({kind:"video", html:'<video controls playsinline preload="metadata" src="'+esc(video.video_url)+'"></video>'});
     else slides.push({kind:"video", html:'<iframe src="'+esc(video.video_url)+'" title="Video" allowfullscreen loading="lazy"></iframe>'});
   }
-  var pics = (DATA.slides||[]).filter(function(x){ return x.kind==="image" && x.image_url; });
-  // Gallery and slideshow share one pool: gallery pictures also slide.
+  var pics = (DATA.slides||[]).filter(function(x){ return x.kind==="image" && x.image_url; }).map(function(p){ return {image_url:p.image_url, title:p.title || "", created_at:p.created_at || ""}; });
+  // Gallery and slideshow share one pool, newest first overall, so a newly
+  // uploaded gallery picture goes to the start of the slideshow too.
   var seen = {};
   pics.forEach(function(p){ seen[p.image_url] = true; });
-  var galPics = (DATA.gallery||[]).filter(function(g){ return g.image_url && !seen[g.image_url]; });
-  galPics.sort(function(a, b){ var ca = a.created_at || "", cb = b.created_at || ""; return ca < cb ? 1 : (ca > cb ? -1 : 0); });
-  galPics.forEach(function(g){ pics.push({image_url:g.image_url, title:g.caption || ""}); });
+  (DATA.gallery||[]).forEach(function(g){ if(g.image_url && !seen[g.image_url]){ seen[g.image_url] = true; pics.push({image_url:g.image_url, title:g.caption || "", created_at:g.created_at || ""}); } });
+  pics.sort(function(a, b){ return a.created_at < b.created_at ? 1 : (a.created_at > b.created_at ? -1 : 0); });
   pics.forEach(function(p){ slides.push({kind:"img", html:'<img src="'+esc(p.image_url)+'" alt="'+esc(p.title||"")+'" loading="lazy" />'+(p.title?'<div class="ss-cap">'+esc(p.title)+'</div>':"")}); });
   if(!slides.length){
     var gal = (DATA.gallery||[]).length ? DATA.gallery.map(function(g){ return {src:g.image_url, caption:g.caption}; }) : SAMPLE_GALLERY;
