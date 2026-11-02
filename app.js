@@ -171,6 +171,7 @@ async function q(table, orderCol){
   if(orderCol) query = query.order(orderCol, {ascending:false});
   var r = await query; return r.data || [];
 }
+var dataLoaded = false;
 async function loadData(){
   if(!cfg.SUPABASE_URL || String(cfg.SUPABASE_URL).indexOf("YOUR-PROJECT")>=0) return false;
   if(!sb) sb = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
@@ -193,6 +194,7 @@ async function loadData(){
     });
     DATA.stories = await q("success_stories");
     DATA.slides = await q("slideshow_items");
+    dataLoaded = true;
     return true;
   } catch(e){ return false; }
 }
@@ -359,12 +361,12 @@ function renderPublic(){
   var bt = document.getElementById("brand-tag"); if(bt) bt.textContent = tagline;
   var ht = document.getElementById("hero-title"); if(ht) ht.innerHTML = esc(headline).replace(", ", ",<br/>").replace("、", "、<br/>");
   var hl = document.getElementById("hero-lead"); if(hl) hl.textContent = lead;
-  var ss = document.getElementById("stat-students"); if(ss) ss.textContent = fmtNum((DATA.students||[]).length);
+  var ss = document.getElementById("stat-students"); if(ss) ss.textContent = dataLoaded ? fmtNum((DATA.students||[]).length) : "…";
   var hc = document.getElementById("home-courses"); if(hc) hc.innerHTML = ["N5","N4","N3"].map(function(l){ return courseCardHTML(l,false); }).join("");
   var cd = document.getElementById("course-details"); if(cd) cd.innerHTML = ["N5","N4","N3"].map(function(l){ return courseCardHTML(l,true); }).join("");
   var sorted = (DATA.notices||[]).map(function(n){ return {date:n.notice_date||"", title:n.title, body:n.body}; }).sort(function(a,b){ return (b.date||"").localeCompare(a.date||""); });
-  var hn = document.getElementById("home-notices"); if(hn) hn.innerHTML = sorted.length ? sorted.slice(0,3).map(noticeHTML).join("") : '<div class="empty-note">'+t("empty_notice")+'</div>';
-  var nl = document.getElementById("notice-list"); if(nl) nl.innerHTML = sorted.length ? sorted.map(noticeHTML).join("") : '<div class="empty-note">'+t("empty_notice")+'</div>';
+  var hn = document.getElementById("home-notices"); if(hn) hn.innerHTML = sorted.length ? sorted.slice(0,3).map(noticeHTML).join("") : (dataLoaded ? '<div class="empty-note">'+t("empty_notice")+'</div>' : '<div class="empty-note">তথ্য লোড হচ্ছে…</div>');
+  var nl = document.getElementById("notice-list"); if(nl) nl.innerHTML = sorted.length ? sorted.map(noticeHTML).join("") : (dataLoaded ? '<div class="empty-note">'+t("empty_notice")+'</div>' : '<div class="empty-note">তথ্য লোড হচ্ছে…</div>');
   var gal = (DATA.gallery||[]).length ? DATA.gallery.map(function(g){ return {id:g.id, src:g.image_url, caption:g.caption}; }) : SAMPLE_GALLERY;
   var gg = document.getElementById("gallery-grid"); if(gg) gg.innerHTML = gal.map(galHTML).join("");
   var at = document.getElementById("about-text"); if(at) at.textContent = about;
