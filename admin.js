@@ -161,6 +161,10 @@ async function addSlide(){
   var url = "";
   try { url = await upload($("#sl-file").files[0]); } catch(e){ $("#sl-msg").textContent = "Photo upload failed: " + (e.message || e) + " — Storage policy SQL run kore abar try korun."; return; }
   var video = $("#sl-video").value.trim();
+  try {
+    var vurl = await upload($("#sl-video-file").files[0]);
+    if(vurl) video = vurl;
+  } catch(e){ $("#sl-msg").textContent = "Video upload failed: " + (e.message || e) + " — Storage policy SQL run kore abar try korun."; return; }
   var r = await sb.from("slideshow_items").insert({kind: video ? "video" : "image", video_url: video, image_url: url, title: $("#sl-title").value.trim()});
   $("#sl-msg").textContent = r.error ? r.error.message : "Slide added.";
   if(!r.error) await loadAll();
