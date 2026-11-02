@@ -21,20 +21,6 @@
   --shadow-sm:0 3px 12px rgba(28,36,52,.08);
   --r:14px;
 }
-@media (prefers-color-scheme: dark){
-  :root{
-    --bg:#12151d; --bg2:#171b26; --surface:#1b202e; --surface2:#222839;
-    --ink:#eef1f6; --ink2:#b9c1d1; --ink3:#8b95a9;
-    --line:#2e3549; --line2:#3d465f;
-    --navy:#8fb0e8; --navy2:#a9c3f2;
-    --red:#e8735f; --red-d:#f08a76;
-    --gold:#d9ab52;
-    --green:#5cc98d; --green-bg:#173527;
-    --red-bg:#3d201b;
-    --shadow:0 10px 30px rgba(0,0,0,.45);
-    --shadow-sm:0 3px 12px rgba(0,0,0,.35);
-  }
-}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hind Siliguri",system-ui,sans-serif;font-size:16.5px;line-height:1.65;-webkit-font-smoothing:antialiased}
@@ -94,12 +80,10 @@ nav.main{display:flex;gap:2px;margin-left:auto;flex-wrap:wrap}
 nav.main button{background:none;border:0;padding:9px 13px;border-radius:9px;font-size:.98rem;font-weight:600;color:var(--ink2)}
 nav.main button:hover{background:var(--surface2);color:var(--ink)}
 nav.main button.on{background:var(--navy);color:#fff}
-@media (prefers-color-scheme: dark){nav.main button.on{color:#0d1220}}
 .btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:11px;padding:12px 22px;font-weight:700;font-size:1rem;text-decoration:none;transition:transform .15s, background .15s}
 .btn:active{transform:scale(.98)}
 .btn-red{background:var(--red);color:#fff}.btn-red:hover{background:var(--red-d)}
 .btn-navy{background:var(--navy);color:#fff}
-@media (prefers-color-scheme: dark){.btn-navy{color:#0d1220}}
 .btn-ghost{background:transparent;border:1.5px solid var(--line2);color:var(--ink)}
 .btn-ghost:hover{border-color:var(--navy);color:var(--navy)}
 .btn-sm{padding:8px 15px;font-size:.92rem;border-radius:9px}
@@ -112,7 +96,6 @@ nav.main button.admin-link svg{flex:none}
 .lang-btn{border:0;background:transparent;padding:7px 12px;border-radius:99px;font-weight:700;font-size:.88rem;color:var(--ink2);line-height:1.25;white-space:nowrap}
 .lang-btn:hover{color:var(--ink)}
 .lang-btn.on{background:var(--navy);color:#fff}
-@media (prefers-color-scheme: dark){.lang-btn.on{color:#0d1220}}
 .lang-mobile{display:none}
 /* ---------- hero ---------- */
 .hero{position:relative;color:#fff;overflow:hidden;background:#22355c}
@@ -211,7 +194,6 @@ section.page.on{display:block}
 
 /* footer */
 footer.site{background:var(--navy);color:#dbe4f3;margin-top:0}
-@media (prefers-color-scheme: dark){footer.site{background:#0d1220}}
 footer.site .cols{display:grid;grid-template-columns:1.3fr 1fr;gap:30px;padding:46px 0 30px}
 footer.site h4{color:#fff;margin:0 0 12px;font-size:1.05rem}
 footer.site p,footer.site li{font-size:.95rem;color:#b9c6dc}
@@ -241,7 +223,6 @@ footer.site a{color:#b9c6dc;text-decoration:none}
 .admin-side button{display:flex;width:100%;align-items:center;gap:10px;background:none;border:0;padding:11px 12px;border-radius:9px;font-weight:600;color:var(--ink2);font-size:.97rem;text-align:left}
 .admin-side button:hover{background:var(--surface2);color:var(--ink)}
 .admin-side button.on{background:var(--navy);color:#fff}
-@media (prefers-color-scheme: dark){.admin-side button.on{color:#0d1220}}
 .admin-panel{display:none}
 .admin-panel.on{display:block}
 .panel-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;box-shadow:var(--shadow-sm);margin-bottom:20px}
@@ -290,7 +271,6 @@ table.tbl{width:100%;border-collapse:collapse;font-size:.94rem}
 .verify-download p{margin:0;color:var(--ink2);font-size:.93rem;flex:1;min-width:200px}
 #cert-download-wrap{position:absolute;left:-14000px;top:0;width:1120px;padding:20px;pointer-events:none}
 .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);background:var(--navy);color:#fff;padding:12px 22px;border-radius:11px;font-weight:600;z-index:300;transition:transform .3s;box-shadow:var(--shadow);max-width:92vw;text-align:center}
-@media (prefers-color-scheme: dark){.toast{color:#0d1220}}
 .toast.show{transform:translateX(-50%) translateY(0)}
 
 @media(max-width:900px){
