@@ -223,28 +223,8 @@ document.addEventListener("click", function(e){
   var dl = e.target.closest("[data-download-cert]");
   if(dl){ e.preventDefault(); downloadIssuedCertificate(dl.getAttribute("data-download-cert"), dl); }
 });
-/* ---------- premium light/dark theme ---------- */
-function currentTheme(){ return document.documentElement.getAttribute("data-theme")==="dark" ? "dark" : "light"; }
-function applyTheme(theme){
-  document.documentElement.setAttribute("data-theme", theme);
-  document.querySelectorAll(".theme-toggle").forEach(function(b){
-    var icon = b.querySelector(".theme-icon"); if(icon) icon.textContent = theme==="dark" ? "☀️" : "🌙";
-    b.setAttribute("aria-label", theme==="dark" ? "Switch to light mode" : "Switch to dark mode");
-    b.setAttribute("aria-pressed", theme==="dark" ? "true" : "false");
-  });
-}
-function toggleTheme(){
-  var next = currentTheme()==="dark" ? "light" : "dark";
-  try{ localStorage.setItem("sbvtc_theme", next); }catch(e){}
-  applyTheme(next);
-}
-/* Delegated binding too, so the toggle works even if the DOMContentLoaded
-   binding is missed on a cached page. */
-document.addEventListener("click", function(e){
-  if(e.target.closest(".theme-toggle")) toggleTheme();
-});
+
 document.addEventListener("DOMContentLoaded", function(){
-  applyTheme(currentTheme());
   document.querySelectorAll(".lang-btn").forEach(function(b){ b.addEventListener("click", function(){ setLang(b.getAttribute("data-lang")); }); });
   var burger = document.getElementById("burger");
   if(burger) burger.addEventListener("click", function(){ document.getElementById("mainnav").classList.toggle("open"); });
