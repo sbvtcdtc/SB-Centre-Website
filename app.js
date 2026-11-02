@@ -129,7 +129,7 @@ function renderSlides(){
   const pics = DATA.slides.filter(x=>x.kind==='image' && x.image_url);
   const items = video ? [{kind:'video',video_url:video.video_url,title:video.title}, ...pics.map(p=>({kind:'image',image_url:p.image_url,title:p.title}))]
                     : (pics.length ? pics : DATA.gallery.map(g=>({kind:'image',image_url:g.image_url,title:g.caption})));
-  if(!items.length){ box.innerHTML = '<div class="card">'+tr('soon')+'</div>'; return; }
+  if(!items.length){ items.push({kind:'image',image_url:'assets/hero-japan.jpg',title:''}); }
   slideIdx = slideIdx % items.length;
   const it = items[slideIdx];
   const media = it.kind==='video'
