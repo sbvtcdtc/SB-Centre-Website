@@ -1,34 +1,83 @@
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,"Hind Siliguri","Noto Sans Bengali",sans-serif;background:#eef0f3;color:#182236;line-height:1.55}
-a{color:#1d3a5f}header{background:#fff;border-bottom:1px solid #d9dde4;position:sticky;top:0;z-index:10}
-.topbar{max-width:1100px;margin:0 auto;padding:12px 16px;display:flex;gap:12px;align-items:center}
-.logo{width:56px;height:56px;border-radius:50%;object-fit:cover;flex:none}
-.topbar h1{font-size:1.25rem;margin:0;text-transform:uppercase}
-.topbar p{margin:0;color:#b3372c;font-weight:600}
-nav{display:flex;gap:6px;flex-wrap:wrap;max-width:1100px;margin:0 auto;padding:0 16px 12px}
-nav button,.lang button{border:1px solid #d9dde4;background:#fff;padding:7px 12px;border-radius:999px;cursor:pointer}
-nav button.active,nav button:hover{background:#1d3a5f;color:#fff}
-.lang{margin-left:auto;display:flex;gap:4px}
-main{max-width:1100px;margin:0 auto;padding:20px 16px 40px}
-section{display:none}section.active{display:block}
-.hero{background:#1d3a5f;color:#fff;border-radius:16px;padding:28px}
-.hero h2{font-size:2rem;margin:0 0 8px}
-.btn{display:inline-block;background:#b3372c;color:#fff;border:0;padding:10px 16px;border-radius:10px;cursor:pointer;text-decoration:none;margin:4px 4px 0 0}
-.btn.secondary{background:#fff;color:#1d3a5f;border:1px solid #1d3a5f}
-.card{background:#fff;border:1px solid #d9dde4;border-radius:14px;padding:18px;margin:14px 0}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-input,textarea,select{width:100%;padding:10px;border:1px solid #d9dde4;border-radius:10px;margin:6px 0 12px;font:inherit}
+:root{
+  --bg:#f7f4ee; --bg2:#efe9dd; --surface:#fffdf8; --surface2:#f3eee2;
+  --ink:#1c2434; --ink2:#4a5468; --ink3:#7c8698;
+  --line:#ddd3bf; --line2:#c9bda0;
+  --navy:#1d2f52; --navy2:#274068;
+  --red:#c73e2c; --red-d:#a93222;
+  --gold:#b98a2f; --green:#1e7d4f;
+  --shadow:0 10px 30px rgba(28,36,52,.10); --shadow-sm:0 3px 12px rgba(28,36,52,.08);
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#12151d; --bg2:#171b26; --surface:#1b202e; --surface2:#222839;
+    --ink:#eef1f6; --ink2:#b9c1d1; --ink3:#8b95a9;
+    --line:#2e3549; --line2:#3d465f;
+    --navy:#8fb0e8; --navy2:#a9c3f2;
+    --red:#e8735f; --red-d:#f08a76;
+    --gold:#d9ab52; --green:#5cc98d;
+    --shadow:0 10px 30px rgba(0,0,0,.45); --shadow-sm:0 3px 12px rgba(0,0,0,.35);
+  }
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hind Siliguri",system-ui,sans-serif;font-size:16.5px;line-height:1.65;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:"Noto Serif Bengali","Hind Siliguri",serif}
+.jp-line{font-family:"Noto Sans JP",sans-serif}
+a{color:var(--navy)}img{max-width:100%}button{font-family:inherit;cursor:pointer}
+input,textarea,select{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;margin:6px 0 12px;font:inherit;color:var(--ink);background:var(--surface)}
 label{font-weight:600;display:block}
-.slide{position:relative;border-radius:16px;overflow:hidden;background:#222;min-height:280px;display:flex;align-items:flex-end}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+/* Header — sticky, blurred, like the reference public site */
+header.site{position:sticky;top:0;z-index:60;background:color-mix(in srgb, var(--bg) 88%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.header-in{display:flex;align-items:center;gap:16px;padding:12px 0}
+.brand{display:flex;align-items:center;gap:13px;text-decoration:none;color:var(--ink);min-width:0}
+.brand b{display:block;font-size:1.05rem;text-transform:uppercase;line-height:1.2}
+.brand small{display:block;color:var(--red);font-weight:600}
+.logo-img{width:54px;height:54px;flex:none;border-radius:50%;object-fit:cover;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow-sm)}
+.lang{margin-left:auto;display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.lang button{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 12px;border-radius:999px}
+.burger{display:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 12px;border-radius:10px;font-size:1.2rem}
+nav{display:flex;gap:6px;flex-wrap:wrap;padding:0 20px 12px}
+nav button{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:7px 12px;border-radius:999px}
+nav button.active,nav button:hover{background:var(--navy);color:#fff}
+main{padding:20px 0 40px}
+section{display:none}section.active{display:block}
+.hero{background:var(--navy);color:#fff;border-radius:16px;padding:28px;box-shadow:var(--shadow)}
+.hero h2{font-size:2rem;margin:0 0 8px}
+.hero .jp-line{color:var(--gold);font-weight:700;margin:0 0 6px}
+.btn{display:inline-block;background:var(--red);color:#fff;border:0;padding:10px 16px;border-radius:10px;cursor:pointer;text-decoration:none;margin:4px 4px 0 0}
+.btn.secondary{background:var(--surface);color:var(--navy);border:1px solid var(--navy)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin:14px 0;box-shadow:var(--shadow-sm)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.stats{display:flex;gap:14px;flex-wrap:wrap;margin:16px 0}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 20px;box-shadow:var(--shadow-sm);flex:1;min-width:200px}
+.stat b{display:block;font-size:1.8rem;color:var(--navy)}
+.slide{position:relative;border-radius:16px;overflow:hidden;background:#222;min-height:280px;display:flex;align-items:flex-end;box-shadow:var(--shadow)}
 .slide img,.slide video,.slide iframe{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border:0}
 .slide .cap{position:relative;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.7));padding:40px 20px 16px;width:100%}
 .slide-nav{text-align:center;margin-top:8px}
-.slide-nav button{border:0;background:#1d3a5f;color:#fff;padding:8px 14px;border-radius:999px;cursor:pointer;margin:0 4px}
-.student-photo{width:90px;height:90px;border-radius:50%;object-fit:cover}
-.ok{color:#1e7d46;font-weight:700}.err{color:#b3261e;font-weight:700}
-footer{background:#182236;color:#fff;padding:24px 16px}
-footer .wrap{max-width:1100px;margin:0 auto}
+.slide-nav button{border:0;background:var(--navy);color:#fff;padding:8px 14px;border-radius:999px;margin:0 4px}
+.ss-dots button{background:transparent;color:var(--ink3);padding:4px;font-size:.8rem}
+.ss-dots button.on{color:var(--red)}
+.gal-card img{width:100%;border-radius:10px;cursor:pointer;display:block}
+.result-flex{display:flex;gap:18px;flex-wrap:wrap}
+.result-photo{width:118px;height:140px;object-fit:cover;border-radius:10px;flex:none;border:1px solid var(--line);background:#fff}
+.teacher-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow-sm);padding:34px;display:grid;grid-template-columns:280px 1fr;gap:32px;align-items:start;max-width:940px;margin:0 auto}
+.teacher-photo{width:280px;height:320px;object-fit:cover;border-radius:14px;display:block;border:1px solid var(--line);background:var(--surface2)}
+.teacher-photo-ph{display:grid;place-items:center;font-family:"Noto Serif Bengali",serif;font-weight:800;font-size:4rem;color:var(--navy)}
+.ach-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.ach-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow-sm)}
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:100;place-items:center;padding:20px}
+.lightbox.open{display:grid}
+.lightbox img{max-width:90vw;max-height:75vh;border-radius:12px}
+.lightbox p{color:#fff;text-align:center}
+.lb-close{position:absolute;top:16px;right:16px;border:0;background:#fff;color:#000;padding:10px 14px;border-radius:999px;font-size:1.1rem}
+.ok{color:var(--green);font-weight:700}.err{color:var(--red);font-weight:700}
+footer{background:#182236;color:#fff;padding:28px 0 16px;margin-top:20px}
 footer a{color:#fff}
-/* Certificate (approved design) */
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:24px}
+.foot-bottom{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.2);padding-top:14px;margin-top:20px}
+/* Certificate (approved design — unchanged) */
 .cert{width:1123px;max-width:100%;background:#fff;color:#000;border:3px solid #000;padding:8px;margin:0 auto}
 .cert-in{border:1px solid #000;padding:18px;text-align:center}
 .c-centre{font-weight:800;font-size:24px;text-transform:uppercase}
@@ -39,4 +88,13 @@ footer a{color:#fff}
 .c-issue{margin:14px 0}.c-divider{border-top:1px solid #555;margin:14px 20px}
 .c-sigs{display:flex;justify-content:space-between;padding:0 20px}
 .c-sig{width:280px}.c-line{border-top:1px dotted #333;margin:20px 0 8px}
+@media(max-width:900px){
+  .burger{display:block}
+  nav{display:none}
+  nav.open{display:flex}
+  .teacher-card{grid-template-columns:1fr;padding:20px}
+  .teacher-photo{width:100%;height:auto;max-height:320px}
+  .ach-grid{grid-template-columns:1fr}
+  .foot-grid{grid-template-columns:1fr}
+}
 @media(max-width:640px){.hero h2{font-size:1.5rem}.c-sigs{flex-direction:column;gap:20px}.c-sig{width:100%}}

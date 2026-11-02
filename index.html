@@ -5,11 +5,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head><body>
-<header><div class="topbar"><img class="logo" src="assets/IMG-20261102-WA0023.jpg" alt="SB logo">
-<div><h1 id="centre-name">SB Vocational Training Centre</h1><p>জাপানি ভাষা শিক্ষা কেন্দ্র</p></div>
-<div class="lang"><button data-lang="bn" onclick="setLang('bn')">বাংলা</button><button data-lang="en" onclick="setLang('en')">English</button><button data-lang="ja" onclick="setLang('ja')">日本語</button></div>
+<header class="site"><div class="wrap header-in">
+<a class="brand" href="#" onclick="show('home');return false;"><img class="logo-img" src="assets/IMG-20261102-WA0023.jpg" alt="SB logo">
+<span><b id="centre-name">SB Vocational Training Centre</b><small id="brand-tag">জাপানি ভাষা শিক্ষা কেন্দ্র</small></span></a>
+<div class="lang"><span data-t="langLabel">ভাষা</span><button data-lang="bn" onclick="setLang('bn')">বাংলা</button><button data-lang="en" onclick="setLang('en')">English</button><button data-lang="ja" onclick="setLang('ja')">日本語</button></div>
+<button class="burger" id="burger" aria-label="Menu">☰</button>
 </div>
-<nav>
+<nav id="mainnav" class="wrap">
 <button data-view="home" class="active" onclick="show('home')" data-t="home">হোম</button>
 <button data-view="courses" onclick="show('courses')" data-t="courses">কোর্সসমূহ</button>
 <button data-view="search" onclick="show('search')" data-t="search">শিক্ষার্থী খুঁজুন</button>
@@ -20,35 +22,48 @@
 <button data-view="ach" onclick="show('ach')" data-t="ach">অর্জনসমূহ</button>
 <button data-view="story" onclick="show('story')" data-t="story">সাফল্যের গল্প</button>
 <button data-view="about" onclick="show('about')" data-t="about">আমাদের সম্পর্কে</button>
-<a class="btn secondary" href="admin.html" data-t="admin" style="margin-left:auto">অ্যাডমিন</a>
 </nav></header>
-<main>
+<main class="wrap">
 <div id="setup-note"></div>
 <section id="view-home" class="active">
-<div class="hero"><h2 id="hero-title"></h2><p id="hero-sub"></p>
+<div class="hero"><p class="jp-line">日本語を学ぼう</p><h2 id="hero-title"></h2><p id="hero-sub"></p>
 <p><a class="btn" href="#" onclick="show('courses');return false;" data-t="courses">কোর্সসমূহ</a>
 <a class="btn secondary" href="#" onclick="show('verify');return false;" data-t="verify">সার্টিফিকেট যাচাই</a></p></div>
-<div id="slideshow" style="margin-top:16px"></div>
+<div class="stats"><div class="stat"><b id="stat-courses">3</b><span data-t="statCourses">কোর্স লেভেল (N5 · N4 · N3)</span></div>
+<div class="stat"><b id="stat-students">0</b><span data-t="statStudents">নিবন্ধিত শিক্ষার্থী</span></div></div>
+<h2 data-t="glimpse">কেন্দ্রের ঝলক</h2>
+<div id="slideshow" style="margin-top:12px"></div>
+<h2 data-t="courses">আমাদের কোর্সসমূহ</h2><div id="home-courses" class="grid"></div>
+<p><a href="#" onclick="show('courses');return false;" data-t="allCourses">সব কোর্সের বিবরণ →</a></p>
+<h2 data-t="latestNotices">সর্বশেষ নোটিশ</h2><div id="home-notices"></div>
+<p><a href="#" onclick="show('notice');return false;" data-t="allNotices">সব নোটিশ →</a></p>
+<div class="card verify-home"><h3 data-t="verify">সার্টিফিকেট যাচাই করুন</h3><p data-t="verifyHomeText">সার্টিফিকেটের লাইসেন্স নম্বর দিয়ে যাচাই করুন সার্টিফিকেটটি আসল কিনা।</p>
+<p><a class="btn" href="#" onclick="show('verify');return false;" data-t="goVerify">যাচাই করতে যান</a></p></div>
 </section>
-<section id="view-courses"><h2 data-t="courses">কোর্সসমূহ</h2><div id="courses-grid" class="grid"></div></section>
-<section id="view-search"><h2 data-t="search">শিক্ষার্থী খুঁজুন</h2>
-<div class="card"><input id="search-input" data-ph="searchHint" placeholder="রোল নম্বর বা নাম লিখুন">
+<section id="view-courses"><h2 data-t="courses">জাপানি ভাষা কোর্স — N5, N4, N3</h2><p data-t="coursesIntro">প্রতিটি কোর্স JLPT / JFT পরীক্ষার সিলেবাস অনুযায়ী সাজানো। ভর্তি সংক্রান্ত তথ্যের জন্য অফিসে যোগাযোগ করুন বা আমাদের Facebook পেজে মেসেজ দিন।</p><div id="courses-grid" class="grid"></div></section>
+<section id="view-search"><h2 data-t="search">রোল নম্বর বা নাম দিয়ে তথ্য দেখুন</h2>
+<div class="card"><p data-t="searchHintText">আপনার রোল নম্বর অথবা নাম (পুরো বা আংশিক) লিখে খুঁজুন বাটনে চাপ দিন।</p>
+<label data-t="searchLabel">রোল নম্বর বা নাম</label><input id="search-input" data-ph="searchHint" placeholder="রোল নম্বর বা নাম লিখুন">
 <button class="btn" onclick="doSearch()" data-t="searchBtn">খুঁজুন</button><div id="search-result"></div></div></section>
-<section id="view-verify"><h2 data-t="verify">সার্টিফিকেট যাচাই</h2>
-<div class="card"><input id="verify-input" data-ph="verifyHint" placeholder="লাইসেন্স নম্বর লিখুন">
+<section id="view-verify"><h2 data-t="verify">সার্টিফিকেটের সত্যতা যাচাই করুন</h2>
+<div class="card"><p data-t="verifyHintText">সার্টিফিকেটে লেখা লাইসেন্স নম্বরটি হুবহু লিখুন।</p>
+<label data-t="verifyLabel">লাইসেন্স নম্বর</label><input id="verify-input" data-ph="verifyHint" placeholder="লাইসেন্স নম্বর লিখুন">
 <button class="btn" onclick="doVerify()" data-t="verifyBtn">যাচাই করুন</button><div id="verify-result"></div></div></section>
-<section id="view-gallery"><h2 data-t="gallery">গ্যালারি</h2><div id="gallery-grid" class="grid"></div></section>
-<section id="view-notice"><h2 data-t="notice">নোটিশ</h2><div id="notices-list"></div></section>
-<section id="view-teacher"><h2 data-t="teacher">শিক্ষক</h2><div id="teacher-box"></div></section>
-<section id="view-ach"><h2 data-t="ach">অর্জনসমূহ</h2><div id="ach-list"></div></section>
-<section id="view-story"><h2 data-t="story">সাফল্যের গল্প</h2><div id="story-list"></div></section>
-<section id="view-about"><h2 data-t="about">আমাদের সম্পর্কে</h2><div class="card"><p id="about-text"></p></div></section>
+<section id="view-gallery"><h2 data-t="gallery">গ্যালারি</h2><p data-t="galleryHint">ছবিতে ক্লিক করলে বড় করে দেখা যাবে।</p><div id="gallery-grid" class="grid"></div></section>
+<section id="view-notice"><h2 data-t="notice">নোটিশ বোর্ড</h2><p data-t="noticeIntro">ক্লাস, পরীক্ষা ও কেন্দ্র সংক্রান্ত গুরুত্বপূর্ণ ঘোষণা।</p><div id="notices-list"></div></section>
+<section id="view-teacher"><h2 data-t="teacherIntro">আমাদের শিক্ষক</h2><p data-t="teacherIntroText">যাঁর তত্ত্বাবধানে আমাদের জাপানি ভাষা কোর্সগুলো পরিচালিত হয়।</p><div id="teacher-box"></div></section>
+<section id="view-ach"><h2 data-t="ach">আমাদের অর্জন</h2><p data-t="achIntro">কেন্দ্র ও আমাদের শিক্ষার্থীদের উল্লেখযোগ্য সাফল্য ও স্বীকৃতি।</p><div id="ach-list" class="ach-grid"></div></section>
+<section id="view-story"><h2 data-t="story">আমাদের শিক্ষার্থীদের সাফল্যের গল্প</h2><p data-t="storyIntro">কে পরীক্ষায় উত্তীর্ণ হয়েছেন, কে জাপানে গেছেন — শিক্ষার্থীদের নিজের পথচলার গল্প।</p><div id="story-list"></div></section>
+<section id="view-about"><h2 data-t="aboutTitle">SB Vocational Training Centre</h2><h3 data-t="aboutIntro">কেন্দ্র পরিচিতি</h3><div class="card"><p id="about-text"></p></div>
+<h3 data-t="whyTitle">কেন আমাদের কাছে শিখবেন</h3><div id="why-grid" class="grid"></div></section>
 </main>
-<footer><div class="wrap">
-<p><b>SB Vocational Training Centre</b></p>
-<p><a id="fb-link" href="https://www.facebook.com/share/1DsnbitRCE/" target="_blank" rel="noopener">Facebook</a>
-&nbsp;•&nbsp;<a id="wa-link" href="#" target="_blank" rel="noopener">WhatsApp</a></p>
-<p id="foot-contact"></p>
-</div></footer>
+<footer><div class="wrap foot-grid">
+<div><p><b>SB Vocational Training Centre</b></p><p id="foot-tagline">জাপানি ভাষা শিক্ষার নির্ভরযোগ্য প্রতিষ্ঠান — N5, N4 ও N3 কোর্সে ধাপে ধাপে প্রস্তুতি।</p>
+<p><a class="btn" id="fb-link" href="https://www.facebook.com/share/1DsnbitRCE/" target="_blank" rel="noopener">Facebook পেজে যুক্ত হোন</a>
+<a class="btn secondary" id="wa-link" href="#" target="_blank" rel="noopener">WhatsApp-এ মেসেজ করুন</a></p></div>
+<div><p><b data-t="contact">যোগাযোগ</b></p><p id="foot-contact"></p></div>
+</div>
+<div class="wrap foot-bottom"><span>© <span id="foot-year">2026</span> SB Vocational Training Centre — <span data-t="rights">সর্বস্বত্ব সংরক্ষিত।</span></span><span>頑張りましょう！</span></div></footer>
+<div id="lightbox" class="lightbox" onclick="closeLightbox()"><button class="lb-close" aria-label="Close">✕</button><img id="lb-img" src="" alt=""><p id="lb-cap"></p></div>
 <script src="config.js"></script><script src="app.js"></script>
 </body></html>
