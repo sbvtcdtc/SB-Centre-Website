@@ -99,12 +99,12 @@ nav.main{display:flex;gap:2px;margin-left:auto;flex-wrap:wrap}
 nav.main button{background:none;border:0;padding:9px 13px;border-radius:9px;font-size:.98rem;font-weight:600;color:var(--ink2)}
 nav.main button:hover{background:var(--surface2);color:var(--ink)}
 nav.main button.on{background:var(--navy);color:#fff}
-@media (prefers-color-scheme: dark){nav.main button.on{color:#0d1220}}
+
 .btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:11px;padding:12px 22px;font-weight:700;font-size:1rem;text-decoration:none;transition:transform .15s, background .15s}
 .btn:active{transform:scale(.98)}
 .btn-red{background:var(--red);color:#fff}.btn-red:hover{background:var(--red-d)}
 .btn-navy{background:var(--navy);color:#fff}
-@media (prefers-color-scheme: dark){.btn-navy{color:#0d1220}}
+
 .btn-ghost{background:transparent;border:1.5px solid var(--line2);color:var(--ink)}
 .btn-ghost:hover{border-color:var(--navy);color:var(--navy)}
 .btn-sm{padding:8px 15px;font-size:.92rem;border-radius:9px}
@@ -316,7 +316,8 @@ body,header.site,nav.main.open,.course-card,.notice-item,.tool-card,.ach-card,.s
   --shadow-sm:0 3px 12px rgba(0,0,0,.35);
   color-scheme:dark;
 }
-[data-theme="dark"] nav.main button.on,[data-theme="dark"] .btn-navy,[data-theme="dark"] .lang-btn.on,[data-theme="dark"] .toast{color:#0d1220}
+[data-theme="dark"] nav.main button.on,[data-theme="dark"] .btn-navy{color:#fff}
+[data-theme="dark"] .lang-btn.on,[data-theme="dark"] .toast{color:#0d1220}
 [data-theme="dark"] footer.site{background:#0d1424;color:#dbe4f3}
 [data-theme="dark"] .theme-toggle{background:#232a3d;border-color:var(--gold);box-shadow:0 8px 22px rgba(217,171,82,.22)}
 [data-theme="dark"] .theme-toggle:hover{box-shadow:0 10px 26px rgba(217,171,82,.32)}
