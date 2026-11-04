@@ -302,7 +302,10 @@ function noticeHTML(n){
   var iso = n.notice_date || n.date || "";
   var p = iso.split("-"); var day = p.length===3 ? fmtNum(p[2]) : "—"; var mon = "";
   if(p.length===3){ if(currentLang==="ja") mon = p[0]+"年"+(+p[1])+"月"; else if(currentLang==="en") mon = MONTHS_EN[+p[1]-1]+" "+p[0]; else mon = MONTHS_BN[+p[1]-1]+" "+bnNum(p[0]); }
-  return '<article class="notice-item"><div class="notice-date"><b>'+day+'</b><span>'+mon+'</span></div><div><h3>'+esc(n.title)+'</h3><p>'+esc(n.body)+'</p></div></article>';
+  var img = n.image_url ? '<img class="notice-img" src="'+esc(n.image_url)+'" alt="" loading="lazy" />' : "";
+  var head = n.title ? '<h3>'+esc(n.title)+'</h3>' : "";
+  var txt = n.body ? '<p>'+esc(n.body)+'</p>' : "";
+  return '<article class="notice-item"><div class="notice-date"><b>'+day+'</b><span>'+mon+'</span></div><div class="notice-body">'+head+txt+img+'</div></article>';
 }
 function galHTML(g){ return '<figure class="gal-item" data-gal="'+esc(g.id)+'" style="margin:0"><img src="'+esc(g.src)+'" alt="'+esc(g.caption||t("gallery_photo"))+'" loading="lazy" /><figcaption>'+esc(g.caption||"")+'</figcaption></figure>'; }
 function studentCardHTML(s){
@@ -377,7 +380,7 @@ function renderPublic(){
   var ss = document.getElementById("stat-students"); if(ss) ss.textContent = dataLoaded ? fmtNum(426 + (DATA.students||[]).length) : "…";
   var hc = document.getElementById("home-courses"); if(hc) hc.innerHTML = ["N5","N4","N3"].map(function(l){ return courseCardHTML(l,false); }).join("");
   var cd = document.getElementById("course-details"); if(cd) cd.innerHTML = ["N5","N4","N3"].map(function(l){ return courseCardHTML(l,true); }).join("");
-  var sorted = (DATA.notices||[]).map(function(n){ return {date:n.notice_date||"", title:n.title, body:n.body}; }).sort(function(a,b){ return (b.date||"").localeCompare(a.date||""); });
+  var sorted = (DATA.notices||[]).map(function(n){ return {date:n.notice_date||"", title:n.title, body:n.body, image_url:n.image_url}; }).sort(function(a,b){ return (b.date||"").localeCompare(a.date||""); });
   var hn = document.getElementById("home-notices"); if(hn) hn.innerHTML = sorted.length ? sorted.slice(0,3).map(noticeHTML).join("") : (dataLoaded ? '<div class="empty-note">'+t("empty_notice")+'</div>' : '<div class="empty-note">তথ্য লোড হচ্ছে…</div>');
   var nl = document.getElementById("notice-list"); if(nl) nl.innerHTML = sorted.length ? sorted.map(noticeHTML).join("") : (dataLoaded ? '<div class="empty-note">'+t("empty_notice")+'</div>' : '<div class="empty-note">তথ্য লোড হচ্ছে…</div>');
   var gal = (DATA.gallery||[]).length || (DATA.slides||[]).length ? (function(){

@@ -79,6 +79,7 @@ create table if not exists public.notices (
   id uuid primary key default gen_random_uuid(),
   title text not null,
   body text default '',
+  image_url text default '',
   notice_date date,
   sort_order int default 0,
   created_at timestamptz default now()

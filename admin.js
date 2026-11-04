@@ -64,7 +64,7 @@ async function loadAll(){
   var courses = await getAll("courses");
   fillCourseForm(courses);
   var notices = await getAll("notices");
-  $("#notice-tbody").innerHTML = notices.map(function(n){ return "<tr><td>"+esc(n.notice_date||"")+"</td><td>"+esc(n.title)+"</td><td>"+delBtn("notices", n.id)+"</td></tr>"; }).join("");
+  $("#notice-tbody").innerHTML = notices.map(function(n){ return "<tr><td>"+esc(n.notice_date||"")+"</td><td>"+(n.image_url ? "📷 " : "")+esc(n.title||"(শুধু ছবি)")+"</td><td>"+delBtn("notices", n.id)+"</td></tr>"; }).join("");
   var students = await getAll("students");
   lastStudentSeq = 0;
   students.forEach(function(x){ var m = String(x.roll || "").match(/(\d+)\s*$/); if(m) lastStudentSeq = Math.max(lastStudentSeq, parseInt(m[1], 10) || 0); });
@@ -117,9 +117,17 @@ async function saveCourse(){
 }
 async function addNotice(){
   await requireAuth();
-  var r = await sb.from("notices").insert({title:$("#n-title").value.trim(), body:$("#n-body").value.trim(), notice_date:$("#n-date").value||null});
+  var title = $("#n-title").value.trim(), body = $("#n-body").value.trim();
+  var image = "";
+  try { image = await upload($("#n-image").files[0]); } catch(e){ $("#n-msg").textContent = "Photo upload failed: " + (e.message || e) + " — Storage policy SQL run kore abar try korun."; return; }
+  if(!title && !body && !image){ $("#n-msg").textContent = "শিরোনাম, লেখা বা ছবি — যেকোনো একটি দিন।"; return; }
+  var r = await sb.from("notices").insert({title:title, body:body, notice_date:$("#n-date").value||null, image_url:image});
+  if(r.error && String(r.error.message||"").indexOf("image_url")>=0){
+    $("#n-msg").textContent = "Supabase-এ notices টেবিলে image_url কলাম নেই। SQL Editor-এ এই লাইনটি চালান: alter table public.notices add column if not exists image_url text default '';";
+    return;
+  }
   $("#n-msg").textContent = r.error ? r.error.message : "Notice added.";
-  if(!r.error){ $("#n-title").value=""; $("#n-body").value=""; await loadAll(); }
+  if(!r.error){ $("#n-title").value=""; $("#n-body").value=""; $("#n-image").value=""; await loadAll(); }
 }
 async function addStudent(){
   await requireAuth();
